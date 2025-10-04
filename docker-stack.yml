@@ -3,8 +3,6 @@ version: "3.9"
 services:
   mysql:
     image: mysql:8.0
-    container_name: mi_mysql
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_DATABASE: midb
@@ -25,7 +23,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      DB_HOST: mi_mysql
+      DB_HOST: mysql
       DB_NAME: midb
       DB_USER: miusuario
       DB_PASS_FILE: /run/secrets/mysql_user_password

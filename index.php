@@ -1,5 +1,5 @@
 <?php
-$servername = getenv("DB_HOST");
+$servername = getenv("DB_HOST") ?: 'mysql';
 $username   = getenv("DB_USER");
 $dbname     = getenv("DB_NAME");
 

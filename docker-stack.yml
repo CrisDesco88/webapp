@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mi_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_DATABASE: midb
+      MYSQL_USER: miusuario
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_user_password
+    secrets:
+      - mysql_root_password
+      - mysql_user_password
+    volumes:
+      - ./db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+    networks:
+      - mi_red
+
+  web:
+    image: crisdesco/miwebapp:1.0   # <--- usa la imagen ya construida
+    depends_on:
+      - mysql
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: mi_mysql
+      DB_NAME: midb
+      DB_USER: miusuario
+      DB_PASS_FILE: /run/secrets/mysql_user_password
+    secrets:
+      - mysql_user_password
+    networks:
+      - mi_red
+
+networks:
+  mi_red:
+    driver: overlay
+
+secrets:
+  mysql_root_password:
+    external: true
+  mysql_user_password:
+    external: true
